@@ -109,7 +109,7 @@ async function main() {
 
                                 console.log("created models dir");
 
-                                let destinationLink = path.resolve(__dirname, '../models/default/model_v5');
+                                let destinationLink = path.resolve(process.cwd(), 'models/default/model_v5');
                                 fs.symlink(destinationLink, "./repos/AIDungeon/generator/gpt2/models/model_v5", (err) => {
                                     if (err) {
                                         if (err.code === 'EEXIST') {
