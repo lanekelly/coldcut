@@ -77,7 +77,7 @@ async function main() {
                 answers = await inquirer.prompt({
                     type: 'confirm',
                     name: 'installConfirmation',
-                    message: 'This game will take up 6.25 GB of disk space. Continue?',
+                    message: 'This game will take up 6.99 GB of disk space. Continue?',
                     default: false
                 });
             }
