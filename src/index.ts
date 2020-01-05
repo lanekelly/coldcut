@@ -7,6 +7,9 @@ import WebTorrent = require("webtorrent");
 import * as cliProgress from 'cli-progress';
 import { spawn, execFile, exec } from 'child_process';
 import { Spinner } from 'cli-spinner';
+import extract = require('extract-zip');
+import path = require('path');
+import https = require('https');
 
 git.plugins.set('fs', fs);
 
@@ -30,24 +33,30 @@ commander
 const WelcomeText = 'Welcome to coldcut, the installer for AI text adventure games.';
 
 const InstalledGamesKey = 'installedGames';
+const IsPythonInstalledKey = "isPythonInstalled";
 
 const SupportedGames = [
     'AIDungeon'
 ];
 
-const AIDungeonRepoPath = './repos/AIDungeon';
+const AIDungeonRepoPath = './system/repos/AIDungeon';
 
 async function main() {
 
     await storage.init({
-        dir: 'system'
+        dir: 'system/internal-storage'
     });
 
     const storageKeys = await storage.keys();
 
     let installedGames: string[] = [];
+    let isPythonInstalled = false;
     if (storageKeys.includes(InstalledGamesKey)) {
         installedGames = await storage.getItem(InstalledGamesKey);
+    }
+
+    if (storageKeys.includes(IsPythonInstalledKey)) {
+        isPythonInstalled = await storage.getItem(IsPythonInstalledKey);
     }
 
     commander.parse(process.argv);
@@ -89,7 +98,31 @@ async function main() {
             let spinner = new Spinner('%s Installing AIDungeon game files');
             spinner.start();
 
-            const AIDungeonModelPath = './repos/AIDungeon/generator/gpt2/models';
+            if (!isPythonInstalled) {
+
+                const pythonNupkgFileName = 'python.3.7.6.nupkg';
+
+                let downloadPythonPromise = new Promise((resolve, reject) => {
+                    const file = fs.createWriteStream(pythonNupkgFileName);
+                    const request = https.get("https://globalcdn.nuget.org/packages/python.3.7.6.nupkg", function(response) {
+                      response.pipe(file).on('finish', resolve);
+                    });
+                })
+
+                await downloadPythonPromise;
+
+                let extractPythonPromise = new Promise((resolve, reject) => {
+                    extract(pythonNupkgFileName, { dir: path.resolve(process.cwd(), 'system/python') }, resolve);
+                });
+
+                await extractPythonPromise;
+
+                await fs.promises.unlink(pythonNupkgFileName);
+
+                await storage.setItem(IsPythonInstalledKey, true);
+            }
+
+            const AIDungeonModelPath = './system/repos/AIDungeon/generator/gpt2/models';
 
             await git.clone({
                 dir: AIDungeonRepoPath,
@@ -100,7 +133,7 @@ async function main() {
                 noSubmodules: true
             });
 
-            const makeVenv = spawn('../../python/python.exe', ['-m', 'venv', 'venv'], {
+            const makeVenv = spawn('../../python/tools/python.exe', ['-m', 'venv', 'venv'], {
                 cwd: AIDungeonRepoPath
             });
 
@@ -192,7 +225,6 @@ async function main() {
 
             console.log("\nDone installing! Run coldcut again to play.");
         } else {
-            console.log('\nSelect a game to run.\n');
 
             let runGameChoices = installedGames.concat(['(Cancel)']);
             let questions = [
