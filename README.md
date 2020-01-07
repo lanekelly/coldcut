@@ -1,16 +1,30 @@
 # coldcut
+Coldcut is a single-exe installer for AI text adventure games on Windows.
 
-Requires Node v12
+Currently supported games:
+- [AI Dungeon](https://github.com/AIDungeon/AIDungeon)
 
+## Using coldcut
+
+Grab the latest release or build from source (see instructions below).
+
+Either double-click the included .exe or run the following from a terminal.
+
+```
+.\coldcut.exe
+```
+
+An interactive prompt will guide you through the installation.
+
+## Building from source on Windows
+
+### Prereqs
+
+- Node v12
+- Yarn
+
+```
 yarn global add typescript
 yarn global add pkg
-
-### Building on Windows
-
->(Powershell) Remove-Item .\build\* -Recurse -Force
-
->tsc && pkg dist/index.js --targets node12 --output build/coldcut
-
-On macOS, assuming Python 3.7 is installed via Homebrew:
-
-export PATH="/usr/local/opt/python/libexec/bin:$PATH" && ./coldcut
+tsc && pkg dist/index.js --targets node12 --output build/coldcut
+```
