@@ -41,8 +41,6 @@ dist
 yarn.lock
 
 # Ignore repos produced during execution
-repos
-models
 system
 build
-python
+deploy
