@@ -6,6 +6,7 @@ import { Installer } from './installer';
 import { Constants } from './constants';
 import { AIDungeonInstaller } from './installers/aidungeon';
 import { ThaDunge2Installer } from './installers/thadunge2';
+import { CloverEditionInstaller } from './installers/cloveredition';
 
 commander
     .option('-d, --debug', 'output diagnostic information while running');
@@ -22,6 +23,7 @@ async function main() {
     const installer = new Installer(state);
     installer.registerInstaller(Constants.AIDungeon, new AIDungeonInstaller(state));
     installer.registerInstaller(Constants.thadunge2, new ThaDunge2Installer(state));
+    installer.registerInstaller(Constants.CloverEdition, new CloverEditionInstaller(state));
 
     if (commander.args.length === 0) {
         console.log(WelcomeText);
@@ -57,6 +59,7 @@ async function main() {
 
             if (answers['game'] === Constants.InstallAnotherGameChoice) {
                 await installer.ExecutePrompt();
+                console.log("\nDone installing! Run coldcut again to play.");
             }
 
             if (answers['game'] == Constants.AIDungeon) {
@@ -68,6 +71,12 @@ async function main() {
             if (answers['game'] === Constants.thadunge2) {
                 exec("start cmd.exe /K \".\\venv\\Scripts\\python play.py\"", {
                     cwd: Constants.thadunge2RepoPath
+                });
+            }
+
+            if (answers['game'] === Constants.CloverEdition) {
+                exec("start cmd.exe /K \".\\venv\\Scripts\\python play.py\"", {
+                    cwd: Constants.CloverEditionRepoPath
                 });
             }
         }

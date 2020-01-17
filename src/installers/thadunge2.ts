@@ -41,7 +41,6 @@ export class ThaDunge2Installer implements InstallerInterface {
             process.exit(1);
         }
 
-
         const makeVenv = spawn('../../python/tools/python.exe', ['-m', 'venv', 'venv'], {
             cwd: Constants.thadunge2RepoPath
         });
