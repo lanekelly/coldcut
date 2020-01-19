@@ -3,6 +3,8 @@ Coldcut is a single-exe installer for AI text adventure games on Windows.
 
 Currently supported games:
 - [AI Dungeon](https://github.com/AIDungeon/AIDungeon)
+- [thadunge2](https://github.com/thadunge2/AIDungeon)
+- [CloverEdition](https://github.com/cloveranon/Clover-Edition)
 
 ## Using coldcut
 
