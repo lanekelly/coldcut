@@ -7,6 +7,7 @@ import { Constants } from './constants';
 import { AIDungeonInstaller } from './installers/aidungeon';
 import { ThaDunge2Installer } from './installers/thadunge2';
 import { CloverEditionInstaller } from './installers/cloveredition';
+import { ModelManager } from './modelmanager';
 
 commander
     .option('-d, --debug', 'output diagnostic information while running');
@@ -21,9 +22,10 @@ async function main() {
     await state.Init();
 
     const installer = new Installer(state);
-    installer.registerInstaller(Constants.AIDungeon, new AIDungeonInstaller(state));
-    installer.registerInstaller(Constants.thadunge2, new ThaDunge2Installer(state));
-    installer.registerInstaller(Constants.CloverEdition, new CloverEditionInstaller(state));
+    const modelManager = new ModelManager(state);
+    installer.registerInstaller(Constants.AIDungeon, new AIDungeonInstaller(state, modelManager));
+    installer.registerInstaller(Constants.thadunge2, new ThaDunge2Installer(state, modelManager));
+    installer.registerInstaller(Constants.CloverEdition, new CloverEditionInstaller(state, modelManager));
 
     if (commander.args.length === 0) {
         console.log(WelcomeText);
@@ -63,18 +65,21 @@ async function main() {
             }
 
             if (answers['game'] == Constants.AIDungeon) {
+                await modelManager.prepareModelForGame(Constants.AIDungeon)
                 exec("start cmd.exe /K \".\\venv\\Scripts\\python play.py\"", {
                     cwd: Constants.AIDungeonRepoPath
                 });
             }
 
             if (answers['game'] === Constants.thadunge2) {
+                await modelManager.prepareModelForGame(Constants.thadunge2);
                 exec("start cmd.exe /K \".\\venv\\Scripts\\python play.py\"", {
                     cwd: Constants.thadunge2RepoPath
                 });
             }
 
             if (answers['game'] === Constants.CloverEdition) {
+                await modelManager.prepareModelForGame(Constants.CloverEdition);
                 exec("start cmd.exe /K \".\\venv\\Scripts\\python play.py\"", {
                     cwd: Constants.CloverEditionRepoPath
                 });

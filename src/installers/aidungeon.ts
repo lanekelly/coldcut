@@ -6,15 +6,19 @@ import { State } from '../state';
 import { Spinner } from 'cli-spinner';
 import { InstallerInterface } from '../installer';
 import { InstallPython } from '../helpers/pythoninstaller';
-import { Torrent } from '../helpers/torrent';
+import { ModelManager } from '../modelmanager';
 
 export class AIDungeonInstaller implements InstallerInterface {
-    requiredDiskSpace = "6.99 GB";
-
     private readonly state: State;
+    private readonly modelManager: ModelManager;
 
-    constructor(state: State) {
+    constructor(state: State, modelManager: ModelManager) {
         this.state = state;
+        this.modelManager = modelManager;
+    }
+
+    get requiredDiskSpace(): string {
+        return this.modelManager.isModelInstalled(Constants.AIDungeon) ? "1.17 GB" : "6.99 GB";
     }
 
     async install() {
@@ -41,11 +45,11 @@ export class AIDungeonInstaller implements InstallerInterface {
             cwd: Constants.AIDungeonRepoPath
         });
 
-        // TODO - add debug flag and emit stderr
-
-        // makeVenv.stderr.on('data', (data) => {
-        //     console.error(`stderr: ${data}`);
-        // });
+        if (this.state.isDebug) {
+            makeVenv.stderr.on('data', (data) => {
+                console.error(`stderr: ${data}`);
+            });
+        }
 
         const makeVenvPromise = new Promise((resolve, reject) => {
             makeVenv.on('close', resolve);
@@ -57,9 +61,11 @@ export class AIDungeonInstaller implements InstallerInterface {
             cwd: Constants.AIDungeonRepoPath
         });
 
-        // upgradePip.stderr.on('data', (data) => {
-        //     console.error(`stderr: ${data}`);
-        // });
+        if (this.state.isDebug) {
+            upgradePip.stderr.on('data', (data) => {
+                console.error(`stderr: ${data}`);
+            });
+        }
 
         const upgradePipPromise = new Promise((resolve, reject) => {
             upgradePip.on('close', resolve);
@@ -71,9 +77,11 @@ export class AIDungeonInstaller implements InstallerInterface {
             cwd: Constants.AIDungeonRepoPath
         });
 
-        // installRequirements.stderr.on('data', (data) => {
-        //     console.error(`stderr: ${data}`);
-        // });
+        if (this.state.isDebug) {
+            installRequirements.stderr.on('data', (data) => {
+                console.error(`stderr: ${data}`);
+            });
+        }
 
         const installRequirementsPromise = new Promise((resolve, reject) => {
             installRequirements.on('close', resolve);
@@ -81,12 +89,12 @@ export class AIDungeonInstaller implements InstallerInterface {
 
         await installRequirementsPromise;
 
-        await fs.promises.mkdir(Constants.AIDungeonModelPath, { recursive: true });
+        await fs.promises.mkdir(Constants.AIDungeonModelRuntimePath, { recursive: true });
 
         spinner.stop(true);
         console.log('Completed installing game files.');
         console.log('Downloading AI model...');
 
-        await Torrent(Constants.AIDungeonModelPath, Constants.AIDungeonDefaultModelMagnetLink);
+        await this.modelManager.initModel(Constants.AIDungeon)
     }
 }

@@ -14,7 +14,6 @@ export async function Torrent(destinationPath: string, magnetLink: string) {
         path: destinationPath
     });
 
-    // TODO -- need to get rid of EventEmitter issues.
     torrent.setMaxListeners(Infinity);
 
     torrent.on('metadata', () => {

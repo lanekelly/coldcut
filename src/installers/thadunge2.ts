@@ -6,15 +6,20 @@ import { InstallPython } from '../helpers/pythoninstaller';
 import * as git from 'isomorphic-git';
 import { spawn, execFile } from 'child_process';
 import * as fs from 'fs';
-import { Torrent } from '../helpers/torrent';
+import { ModelManager } from '../modelmanager';
 
 export class ThaDunge2Installer implements InstallerInterface {
-    requiredDiskSpace = "6.99 GB";
 
     private readonly state: State;
+    private readonly modelManager: ModelManager;
 
-    constructor(state: State) {
+    constructor(state: State, modelManager: ModelManager) {
         this.state = state;
+        this.modelManager = modelManager;
+    }
+
+    get requiredDiskSpace() {
+        return this.modelManager.isModelInstalled(Constants.thadunge2) ? "1.18 GB" : "6.99 GB";
     }
 
     async install() {
@@ -89,12 +94,12 @@ export class ThaDunge2Installer implements InstallerInterface {
 
         await installRequirementsPromise;
 
-        await fs.promises.mkdir(Constants.thadunge2ModelPath, { recursive: true });
+        await fs.promises.mkdir(Constants.thadunge2ModelRuntimePath, { recursive: true });
 
         spinner.stop(true);
         console.log('Completed installing game files.');
         console.log('Downloading AI model...');
 
-        await Torrent(Constants.thadunge2ModelPath, Constants.AIDungeonDefaultModelMagnetLink);
+        await this.modelManager.initModel(Constants.thadunge2);
     }
 }

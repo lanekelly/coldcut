@@ -1,0 +1,78 @@
+/* Shamelessly stolen from https://pages-themes.github.io/hacker/ */
+
+body {
+    background-image: url("../images/bkg.png");
+    color: #eaeaea;
+    font-size: 16px;
+    line-height: 1.5;
+    font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+}
+
+.container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0 0 20px;
+}
+
+section {
+    display: block;
+    margin: 0 0 20px 0;
+}
+
+header {
+    background: rgba(0, 0, 0, 0.1);
+    width: 100%;
+    border-bottom: 1px dashed #63c0f5;
+    padding: 20px 0;
+    margin: 0 0 40px 0;
+}
+
+header h1 {
+    font-size: 30px;
+    line-height: 1.5;
+    margin: 0px;
+    font-weight: bold;
+    font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+    color: #63c0f5;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1),
+                    0 0 5px rgba(181, 232, 83, 0.1),
+                    0 0 10px rgba(181, 232, 83, 0.1);
+    letter-spacing: -1px;
+    -webkit-font-smoothing: antialiased;
+}
+
+header h2 {
+    font-size: 18px;
+    font-weight: 300;
+    color: #666;
+}
+
+.btn {
+    display: inline-block;
+    background: -webkit-linear-gradient(top, rgba(40, 40, 40, 0.3), rgba(35, 35, 35, 0.3) 50%, rgba(10, 10, 10, 0.3) 50%, rgba(0, 0, 0, 0.3));
+    padding: 8px 18px;
+    border-radius: 50px;
+    border: 2px solid rgba(0, 0, 0, 0.7);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.7);
+    border-top: 2px solid rgba(0, 0, 0, 1);
+    color: rgba(255, 255, 255, 0.8);
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+    text-decoration: none;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.75);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.btn:hover {
+    background: -webkit-linear-gradient(top, rgba(40, 40, 40, 0.6), rgba(35, 35, 35, 0.6) 50%, rgba(10, 10, 10, 0.8) 50%, rgba(0, 0, 0, 0.8));
+}
+
+a {
+    color: #eaeaea;
+    text-shadow: 0 0 5px rgba(104, 182, 255, 0.5);
+}

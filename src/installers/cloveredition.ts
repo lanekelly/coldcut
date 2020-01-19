@@ -2,18 +2,20 @@ import { InstallerInterface } from '../installer';
 import { Spinner } from 'cli-spinner';
 import { Constants } from '../constants';
 import { State } from '../state';
-import { InstallPython, InitVenv } from '../helpers/pythoninstaller';
+import { InstallPython } from '../helpers/pythoninstaller';
 import * as git from 'isomorphic-git';
 import { execFile, spawn } from 'child_process';
-import { Torrent } from '../helpers/torrent';
+import { ModelManager } from '../modelmanager';
 
 export class CloverEditionInstaller implements InstallerInterface {
-    requiredDiskSpace = "TODO";
+    requiredDiskSpace = "7.26 GB";
 
     private readonly state: State;
+    private readonly modelManager: ModelManager;
 
-    constructor(state: State) {
+    constructor(state: State, modelManager: ModelManager) {
         this.state = state;
+        this.modelManager = modelManager;
     }
 
     async install() {
@@ -122,10 +124,26 @@ export class CloverEditionInstaller implements InstallerInterface {
 
         await installOptionalRequirementsPromise;
 
+        const colorama = execFile("./venv/Scripts/pip", ["install", "colorama"], {
+            cwd: Constants.CloverEditionRepoPath
+        });
+
+        if (this.state.isDebug) {
+            colorama.stderr.on('data', (data) => {
+                console.error(`stderr: ${data}`);
+            });
+        }
+
+        const coloramaPromise = new Promise((resolve, reject) => {
+            colorama.on('close', resolve);
+        });
+
+        await coloramaPromise;
+
         spinner.stop(true);
         console.log('Completed installing game files.');
         console.log('Downloading AI model...');
 
-        await Torrent(Constants.CloverEditionModelPath, Constants.CloverEditionDefaultModelMagnetLink);
+        await this.modelManager.initModel(Constants.CloverEdition);
     }
 }
