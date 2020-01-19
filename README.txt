@@ -2,6 +2,8 @@ Welcome to coldcut, the installer for AI text adventure games on Windows.
 
 Currently supported games:
 - AIDungeon
+- thadunge2
+- CloverEdition
 
 == How to play ==
 
@@ -15,7 +17,7 @@ Windows is naturally suspicious of running random .exe's you download from the i
 clicking on the .exe, it will probably block you from running it. You'll need to choose to run
 it anyway.
 
-When downloading the AI model for AIDungeon, Windows Firewall will prompt you about Node.js
+When downloading the AI model for each game, Windows Firewall will prompt you about Node.js
 using a network connection. You will need to allow it to continue in order for the model
 to download to your computer.
 
@@ -37,3 +39,22 @@ https://developer.nvidia.com/rdp/cudnn-download
 
 Guide to install cuDNN
 https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#installwindows
+
+== Contact ==
+
+If you have any issues with Coldcut, please create an Issue on the project's GitHub:
+
+GitHub:
+https://github.com/lanekelly/coldcut/issues
+
+If you'd like to contact the developer directly, reach me at:
+
+Twitter:
+https://twitter.com/_lanekelly
+
+AIDungeon Discord:
+@partialparcel
+https://discord.gg/Dg8Vcz6
+
+Reddit:
+https://www.reddit.com/user/partialparcel/
