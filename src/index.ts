@@ -8,6 +8,8 @@ import { AIDungeonInstaller } from './installers/aidungeon';
 import { ThaDunge2Installer } from './installers/thadunge2';
 import { CloverEditionInstaller } from './installers/cloveredition';
 import { ModelManager } from './modelmanager';
+import { AIDungeonLikeInstaller } from './installers/aidungeon-like';
+import { CatalogManager } from './catalogmanager';
 
 commander
     .option('-d, --debug', 'output diagnostic information while running');
@@ -23,9 +25,11 @@ async function main() {
 
     const installer = new Installer(state);
     const modelManager = new ModelManager(state);
+    const catalogManager = new CatalogManager();
     installer.registerInstaller(Constants.AIDungeon, new AIDungeonInstaller(state, modelManager));
     installer.registerInstaller(Constants.thadunge2, new ThaDunge2Installer(state, modelManager));
     installer.registerInstaller(Constants.CloverEdition, new CloverEditionInstaller(state, modelManager));
+    installer.registerInstaller(Constants.ZenDungeon, new AIDungeonLikeInstaller(state, modelManager, catalogManager.get(Constants.ZenDungeon)));
 
     if (commander.args.length === 0) {
         console.log(WelcomeText);
@@ -84,6 +88,12 @@ async function main() {
                     cwd: Constants.CloverEditionRepoPath
                 });
             }
+
+            var gameParams = catalogManager.get(answers['game'] as string);
+            await modelManager.prepareModelForGame(gameParams.Name);
+            exec("start cmd.exe /K \".\\venv\\Scripts\\python play.py\"", {
+                cwd: gameParams.RepoPath
+            });
         }
     }
 }

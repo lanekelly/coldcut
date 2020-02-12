@@ -5,7 +5,7 @@ import fs = require('fs');
 import path = require('path');
 
 export class ModelManager {
-
+    // TODO: reconcile this with Game class
     private gameData = [
         {
             game: Constants.AIDungeon,
@@ -21,6 +21,11 @@ export class ModelManager {
             game: Constants.CloverEdition,
             runtimePath: Constants.CloverEditionModelRuntimePath,
             defaultModel: Constants.CloverEditionDefaultModel
+        },
+        {
+            game: Constants.ZenDungeon,
+            runtimePath: Constants.ZenDungeonModelRuntimePath,
+            defaultModel: Constants.AIDungeonDefaultModel
         }
     ];
 

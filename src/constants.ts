@@ -7,6 +7,11 @@ export class Constants {
     static readonly thadunge2RepoPath = `./system/repos/${Constants.thadunge2}`;
     static readonly thadunge2ModelRuntimePath = `${Constants.thadunge2RepoPath}/generator/gpt2/models`;
 
+    static readonly ZenDungeon = 'ZenDungeon';
+    static readonly ZenDungeonRepoPath = `./system/repos/${Constants.ZenDungeon}`;
+    static readonly ZenDungeonModelRuntimePath = `${Constants.ZenDungeonRepoPath}/generator/gpt2/models`;
+    static readonly ZenDungeonGitRepo = 'https://gitlab.com/aolko/ZenDungeon.git';
+
     static readonly CloverEdition = 'CloverEdition';
     static readonly CloverEditionRepoPath = `./system/repos/${Constants.CloverEdition}`;
     static readonly CloverEditionModelRuntimePath = `${Constants.CloverEditionRepoPath}/models`;
@@ -25,6 +30,7 @@ export class Constants {
     static readonly SupportedGames = [
         Constants.AIDungeon,
         Constants.thadunge2,
-        Constants.CloverEdition
+        Constants.CloverEdition,
+        Constants.ZenDungeon
     ];
 }
