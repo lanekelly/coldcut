@@ -26,6 +26,11 @@ export class ModelManager {
             game: Constants.ZenDungeon,
             runtimePath: Constants.ZenDungeonModelRuntimePath,
             defaultModel: Constants.AIDungeonDefaultModel
+        },
+        {
+            game: Constants.Storybro,
+            runtimePath: Constants.StorybroModelRuntimePath,
+            defaultModel: Constants.AIDungeonDefaultModel
         }
     ];
 

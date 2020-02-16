@@ -29,10 +29,9 @@ export class AIDungeonLikeInstaller implements InstallerInterface {
         let spinner = new Spinner(`%s Installing ${this.gameParams.Name} game files`);
         spinner.start();
 
-        if (!this.state.isPythonInstalled) {
-
-            await InstallPython();
-            await this.state.setIsPythonInstalled(true);
+        if (!this.state.isPythonInstalled(Constants.Python376)) {
+            await InstallPython(Constants.Python376Nuget, Constants.Python376);
+            await this.state.setIsPythonInstalled(Constants.Python376, true);
         }
 
         try {
@@ -49,7 +48,7 @@ export class AIDungeonLikeInstaller implements InstallerInterface {
             process.exit(1);
         }
 
-        const makeVenv = spawn('../../python/tools/python.exe', ['-m', 'venv', 'venv'], {
+        const makeVenv = spawn(`../../${Constants.Python376}/tools/python.exe`, ['-m', 'venv', 'venv'], {
             cwd: this.gameParams.RepoPath
         });
 

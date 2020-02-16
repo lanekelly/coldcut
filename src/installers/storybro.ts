@@ -7,47 +7,37 @@ import * as git from 'isomorphic-git';
 import { spawn, execFile } from 'child_process';
 import * as fs from 'fs';
 import { ModelManager } from '../modelmanager';
+import { GameParametersInterface } from '../catalogmanager';
 
-export class ThaDunge2Installer implements InstallerInterface {
+export class StorybroInstaller implements InstallerInterface {
 
     private readonly state: State;
     private readonly modelManager: ModelManager;
+    private readonly gameParams: GameParametersInterface;
 
-    constructor(state: State, modelManager: ModelManager) {
+    constructor(state: State, modelManager: ModelManager, gameParams: GameParametersInterface) {
         this.state = state;
         this.modelManager = modelManager;
+        this.gameParams = gameParams;
     }
 
     get requiredDiskSpace() {
-        return this.modelManager.isModelInstalled(Constants.thadunge2) ? "1.18 GB" : "6.99 GB";
+        return this.modelManager.isModelInstalled(this.gameParams.Name) ? "1.19 GB" : "7.01 GB";
     }
 
     async install() {
-        let spinner = new Spinner(`%s Installing ${Constants.thadunge2} game files`);
+        let spinner = new Spinner(`%s Installing ${this.gameParams.Name} game files`);
         spinner.start();
 
-        if (!this.state.isPythonInstalled) {
-
-            await InstallPython();
-            await this.state.setIsPythonInstalled(true);
+        if (!this.state.isPythonInstalled(Constants.Python368)) {
+            await InstallPython(Constants.Python368Nuget, Constants.Python368);
+            await this.state.setIsPythonInstalled(Constants.Python368, true);
         }
 
-        try {
-            await git.clone({
-                dir: Constants.thadunge2RepoPath,
-                url: 'https://github.com/thadunge2/AIDungeon.git',
-                ref: 'master',
-                singleBranch: true,
-                depth: 1,
-                noSubmodules: true
-            });
-        } catch (err) {
-            console.log(err);
-            process.exit(1);
-        }
+        await fs.promises.mkdir(this.gameParams.RepoPath, { recursive: true });
 
-        const makeVenv = spawn('../../python/tools/python.exe', ['-m', 'venv', 'venv'], {
-            cwd: Constants.thadunge2RepoPath
+        const makeVenv = spawn(`../../${Constants.Python368}/tools/python.exe`, ['-m', 'venv', 'venv'], {
+            cwd: this.gameParams.RepoPath
         });
 
         if (this.state.isDebug) {
@@ -63,7 +53,7 @@ export class ThaDunge2Installer implements InstallerInterface {
         await makeVenvPromise;
 
         const upgradePip = execFile("./venv/Scripts/pip", ["install", "--upgrade", "pip", "setuptools", "--user"], {
-            cwd: Constants.thadunge2RepoPath
+            cwd: this.gameParams.RepoPath
         });
 
         if (this.state.isDebug) {
@@ -78,8 +68,8 @@ export class ThaDunge2Installer implements InstallerInterface {
 
         await upgradePipPromise;
 
-        const installRequirements = execFile("./venv/Scripts/pip", ["install", "-r", "requirements.txt"], {
-            cwd: Constants.thadunge2RepoPath
+        const installRequirements = execFile("./venv/Scripts/pip", ["install", "storybro"], {
+            cwd: this.gameParams.RepoPath
         });
 
         if (this.state.isDebug) {
@@ -94,12 +84,18 @@ export class ThaDunge2Installer implements InstallerInterface {
 
         await installRequirementsPromise;
 
-        await fs.promises.mkdir(Constants.thadunge2ModelRuntimePath, { recursive: true });
+        await fs.promises.mkdir(this.gameParams.ModelRuntimePath, { recursive: true });
+        await fs.promises.mkdir(`${Constants.StorybroRepoPath}/grammars`);
+        await fs.promises.mkdir(`${Constants.StorybroRepoPath}/stories`);
+
+        const configString = "models_path=\"models\"\nstories_path=\"stories\"\ngrammars_path=\"grammars\"";
+
+        await fs.promises.writeFile(`${Constants.StorybroRepoPath}/cc.config`, configString);
 
         spinner.stop(true);
         console.log('Completed installing game files.');
         console.log('Downloading AI model...');
 
-        await this.modelManager.initModel(Constants.thadunge2);
+        await this.modelManager.initModel(this.gameParams.Name);
     }
 }

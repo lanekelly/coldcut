@@ -4,12 +4,11 @@ import { State } from './state';
 import { exec } from 'child_process';
 import { Installer } from './installer';
 import { Constants } from './constants';
-import { AIDungeonInstaller } from './installers/aidungeon';
-import { ThaDunge2Installer } from './installers/thadunge2';
 import { CloverEditionInstaller } from './installers/cloveredition';
 import { ModelManager } from './modelmanager';
 import { AIDungeonLikeInstaller } from './installers/aidungeon-like';
 import { CatalogManager } from './catalogmanager';
+import { StorybroInstaller } from './installers/storybro';
 
 commander
     .option('-d, --debug', 'output diagnostic information while running');
@@ -26,10 +25,11 @@ async function main() {
     const installer = new Installer(state);
     const modelManager = new ModelManager(state);
     const catalogManager = new CatalogManager();
-    installer.registerInstaller(Constants.AIDungeon, new AIDungeonInstaller(state, modelManager));
-    installer.registerInstaller(Constants.thadunge2, new ThaDunge2Installer(state, modelManager));
+    installer.registerInstaller(Constants.AIDungeon, new AIDungeonLikeInstaller(state, modelManager, catalogManager.get(Constants.AIDungeon)));
+    installer.registerInstaller(Constants.thadunge2, new AIDungeonLikeInstaller(state, modelManager, catalogManager.get(Constants.thadunge2)));
     installer.registerInstaller(Constants.CloverEdition, new CloverEditionInstaller(state, modelManager));
     installer.registerInstaller(Constants.ZenDungeon, new AIDungeonLikeInstaller(state, modelManager, catalogManager.get(Constants.ZenDungeon)));
+    installer.registerInstaller(Constants.Storybro, new StorybroInstaller(state, modelManager, catalogManager.get(Constants.Storybro)));
 
     if (commander.args.length === 0) {
         console.log(WelcomeText);
@@ -66,34 +66,36 @@ async function main() {
             if (answers['game'] === Constants.InstallAnotherGameChoice) {
                 await installer.ExecutePrompt();
                 console.log("\nDone installing! Run coldcut again to play.");
-            }
-
-            if (answers['game'] == Constants.AIDungeon) {
-                await modelManager.prepareModelForGame(Constants.AIDungeon)
-                exec("start cmd.exe /K \".\\venv\\Scripts\\python play.py\"", {
-                    cwd: Constants.AIDungeonRepoPath
-                });
-            }
-
-            if (answers['game'] === Constants.thadunge2) {
-                await modelManager.prepareModelForGame(Constants.thadunge2);
-                exec("start cmd.exe /K \".\\venv\\Scripts\\python play.py\"", {
-                    cwd: Constants.thadunge2RepoPath
-                });
-            }
-
-            if (answers['game'] === Constants.CloverEdition) {
-                await modelManager.prepareModelForGame(Constants.CloverEdition);
-                exec("start cmd.exe /K \".\\venv\\Scripts\\python play.py\"", {
-                    cwd: Constants.CloverEditionRepoPath
-                });
+                process.exit(0);
             }
 
             var gameParams = catalogManager.get(answers['game'] as string);
             await modelManager.prepareModelForGame(gameParams.Name);
-            exec("start cmd.exe /K \".\\venv\\Scripts\\python play.py\"", {
-                cwd: gameParams.RepoPath
-            });
+
+            if (gameParams.Name === Constants.Storybro) {
+
+                console.log("Instructions:")
+                console.log("You must pass the \"cc.config\" config file to storybro to use the AI model managed by coldcut.\n")
+                console.log("Example: \"storybro --config cc.config play newstory\"\n")
+
+                let prompt = [
+                    {
+                        type: 'input',
+                        name: 'nothing',
+                        message: 'Press enter to launch.'
+                    }
+                ];
+
+                await inquirer.prompt(prompt);
+
+                exec("start cmd.exe /K \".\\venv\\Scripts\\activate\"", {
+                    cwd: gameParams.RepoPath
+                });
+            } else {
+                exec("start cmd.exe /K \".\\venv\\Scripts\\python play.py\"", {
+                    cwd: gameParams.RepoPath
+                });
+            }
         }
     }
 }

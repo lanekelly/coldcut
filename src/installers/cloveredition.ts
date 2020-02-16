@@ -22,16 +22,16 @@ export class CloverEditionInstaller implements InstallerInterface {
         let spinner = new Spinner(`%s Installing ${Constants.CloverEdition} game files`);
         spinner.start();
 
-        if (!this.state.isPythonInstalled) {
+        if (!this.state.isPythonInstalled(Constants.Python376)) {
 
-            await InstallPython();
-            await this.state.setIsPythonInstalled(true);
+            await InstallPython(Constants.Python376Nuget, Constants.Python376);
+            await this.state.setIsPythonInstalled(Constants.Python376, true);
         }
 
         try {
             await git.clone({
                 dir: Constants.CloverEditionRepoPath,
-                url: 'https://github.com/cloveranon/Clover-Edition.git',
+                url: Constants.CloverEditionRemoteRepoUri,
                 ref: 'master',
                 singleBranch: true,
                 depth: 1,
@@ -42,7 +42,7 @@ export class CloverEditionInstaller implements InstallerInterface {
             process.exit(1);
         }
 
-        const makeVenv = spawn('../../python/tools/python.exe', ['-m', 'venv', 'venv'], {
+        const makeVenv = spawn(`../../${Constants.Python376}/tools/python.exe`, ['-m', 'venv', 'venv'], {
             cwd: Constants.CloverEditionRepoPath
         });
 

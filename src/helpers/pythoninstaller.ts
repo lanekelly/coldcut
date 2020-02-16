@@ -4,12 +4,11 @@ import extract = require('extract-zip');
 import path = require('path');
 import { spawn, execFile } from 'child_process';
 
-export async function InstallPython() {
-    const pythonNupkgFileName = 'python.3.7.6.nupkg';
+export async function InstallPython(pythonNupkgFileName: string, pythonInstallDirName: string) {
 
     let downloadPythonPromise = new Promise((resolve, reject) => {
         const file = fs.createWriteStream(pythonNupkgFileName);
-        const request = https.get("https://globalcdn.nuget.org/packages/python.3.7.6.nupkg", function(response) {
+        const request = https.get(`https://globalcdn.nuget.org/packages/${pythonNupkgFileName}`, function(response) {
             response.pipe(file).on('finish', resolve);
         });
     })
@@ -17,7 +16,7 @@ export async function InstallPython() {
     await downloadPythonPromise;
 
     let extractPythonPromise = new Promise((resolve, reject) => {
-        extract(pythonNupkgFileName, { dir: path.resolve(process.cwd(), 'system/python') }, resolve);
+        extract(pythonNupkgFileName, { dir: path.resolve(process.cwd(), `system/${pythonInstallDirName}`) }, resolve);
     });
 
     await extractPythonPromise;

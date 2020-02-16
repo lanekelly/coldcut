@@ -1,12 +1,15 @@
 import storage = require('node-persist');
 import commander = require('commander');
+import { Constants } from './constants';
 
 export class State {
     private static readonly InstalledGamesKey = 'installedGames';
-    private static readonly IsPythonInstalledKey = 'isPythonInstalled';
     private static readonly ModelStatesKey = 'modelState';
+    private static readonly IsPython376InstalledKey = 'isPython376Installed';
+    private static readonly IsPython368InstalledKey = 'isPython368Installed';
 
-    private _isPythonInstalled: boolean;
+    private _isPython376Installed: boolean;
+    private _isPython368Installed: boolean;
     private _installedGames: string[] = [];
     private _modelStates: ModelState[] = [];
 
@@ -21,8 +24,12 @@ export class State {
             this._installedGames = await storage.getItem(State.InstalledGamesKey);
         }
 
-        if (storageKeys.includes(State.IsPythonInstalledKey)) {
-            this._isPythonInstalled = await storage.getItem(State.IsPythonInstalledKey);
+        if (storageKeys.includes(State.IsPython376InstalledKey)) {
+            this._isPython376Installed = await storage.getItem(State.IsPython376InstalledKey);
+        }
+
+        if (storageKeys.includes(State.IsPython368InstalledKey)) {
+            this._isPython368Installed = await storage.getItem(State.IsPython368InstalledKey);
         }
 
         if (storageKeys.includes(State.ModelStatesKey)) {
@@ -34,8 +41,15 @@ export class State {
         return this._installedGames;
     }
 
-    get isPythonInstalled(): boolean {
-        return this._isPythonInstalled;
+    isPythonInstalled(version: string): boolean {
+        switch (version) {
+            case Constants.Python376:
+                return this._isPython376Installed;
+            case Constants.Python368:
+                return this._isPython368Installed;
+            default:
+                return false;
+        }
     }
 
     get isDebug(): boolean {
@@ -46,10 +60,17 @@ export class State {
         return this._modelStates.find(e => e.modelName === name);
     }
 
-    async setIsPythonInstalled(value: boolean) {
-        this._isPythonInstalled = value;
-
-        await storage.setItem(State.IsPythonInstalledKey, this._isPythonInstalled);
+    async setIsPythonInstalled(version: string, value: boolean) {
+        switch (version) {
+            case Constants.Python376:
+                this._isPython376Installed = value;
+                await storage.setItem(State.IsPython376InstalledKey, this._isPython376Installed);
+            case Constants.Python368:
+                this._isPython368Installed = value;
+                await storage.setItem(State.IsPython368InstalledKey, this._isPython368Installed);
+            default:
+                return;
+        }
     }
 
     async addInstalledGame(value: string) {
