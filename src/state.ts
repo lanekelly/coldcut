@@ -65,9 +65,11 @@ export class State {
             case Constants.Python376:
                 this._isPython376Installed = value;
                 await storage.setItem(State.IsPython376InstalledKey, this._isPython376Installed);
+                return;
             case Constants.Python368:
                 this._isPython368Installed = value;
                 await storage.setItem(State.IsPython368InstalledKey, this._isPython368Installed);
+                return;
             default:
                 return;
         }
