@@ -5,6 +5,8 @@ Currently supported games:
 - [AI Dungeon](https://github.com/AIDungeon/AIDungeon)
 - [thadunge2](https://github.com/thadunge2/AIDungeon)
 - [CloverEdition](https://github.com/cloveranon/Clover-Edition)
+- [Storybro](https://github.com/storybro/storybro)
+- [ZenDungeon](https://gitlab.com/aolko/ZenDungeon)
 
 ## Using coldcut
 

@@ -4,6 +4,8 @@ Currently supported games:
 - AIDungeon
 - thadunge2
 - CloverEdition
+- Storybro
+- ZenDungeon
 
 == How to play ==
 
