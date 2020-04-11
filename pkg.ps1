@@ -1,4 +1,7 @@
+New-Item -ItemType Directory -Force -Path .\build | Out-Null
+New-Item -ItemType Directory -Force -Path .\deploy | Out-Null
 Remove-Item build\* -Recurse -Force
+& "yarn"
 & "tsc"
 & "pkg" dist/index.js --targets node12 --output build/coldcut
 Copy-Item .\README.txt .\build\

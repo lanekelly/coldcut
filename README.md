@@ -20,15 +20,28 @@ Either double-click the included .exe or run the following from a terminal.
 
 An interactive prompt will guide you through the installation.
 
-## Building from source on Windows
+## Prereqs for local development
 
-### Prereqs
-
-- Node v12
-- Yarn
+- [Node v12](https://nodejs.org/en/blog/release/v12.13.0/)
+- [Yarn](https://classic.yarnpkg.com/en/docs/install/#windows-stable)
 
 ```
-yarn global add typescript
-yarn global add pkg
-tsc && pkg dist/index.js --targets node12 --output build/coldcut
+yarn global add typescript pkg
 ```
+
+## Building and running from source on Windows
+
+```
+yarn
+tsc
+node .\dist\index.js
+```
+
+## Packaging a new version for release
+Coldcut uses [zeit/pkg](https://github.com/zeit/pkg) to produce a standalone executable.
+
+In PowerShell:
+```
+.\pkg.ps1
+```
+Afterwords, **coldcut.exe** can be found in the *build/* folder, while the zipped release, **coldcut-win-x64.zip**, is found in *deploy/*.
