@@ -21,12 +21,12 @@ export class AIDungeonLikeInstaller implements InstallerInterface {
         this.gameParams = gameParams;
     }
 
-    get requiredDiskSpace() {
+    get requiredDiskSpace(): string {
         return this.modelManager.isModelInstalled(this.gameParams.Name) ? "1.18 GB" : "6.99 GB";
     }
 
-    async install() {
-        let spinner = new Spinner(`%s Installing ${this.gameParams.Name} game files`);
+    async install(): Promise<void> {
+        const spinner = new Spinner(`%s Installing ${this.gameParams.Name} game files`);
         spinner.start();
 
         if (!this.state.isPythonInstalled(Constants.Python376)) {
@@ -58,7 +58,7 @@ export class AIDungeonLikeInstaller implements InstallerInterface {
             });
         }
 
-        const makeVenvPromise = new Promise((resolve, reject) => {
+        const makeVenvPromise = new Promise((resolve) => {
             makeVenv.on('close', resolve);
         });
 
@@ -74,7 +74,7 @@ export class AIDungeonLikeInstaller implements InstallerInterface {
             });
         }
 
-        const upgradePipPromise = new Promise((resolve, reject) => {
+        const upgradePipPromise = new Promise((resolve) => {
             upgradePip.on('close', resolve);
         });
 
@@ -90,7 +90,7 @@ export class AIDungeonLikeInstaller implements InstallerInterface {
             });
         }
 
-        const installRequirementsPromise = new Promise((resolve, reject) => {
+        const installRequirementsPromise = new Promise((resolve) => {
             installRequirements.on('close', resolve);
         });
 

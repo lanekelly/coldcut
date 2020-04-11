@@ -4,18 +4,18 @@ import extract = require('extract-zip');
 import path = require('path');
 import { spawn, execFile } from 'child_process';
 
-export async function InstallPython(pythonNupkgFileName: string, pythonInstallDirName: string) {
+export async function InstallPython(pythonNupkgFileName: string, pythonInstallDirName: string): Promise<void> {
 
-    let downloadPythonPromise = new Promise((resolve, reject) => {
+    const downloadPythonPromise = new Promise((resolve) => {
         const file = fs.createWriteStream(pythonNupkgFileName);
-        const request = https.get(`https://globalcdn.nuget.org/packages/${pythonNupkgFileName}`, function(response) {
+        https.get(`https://globalcdn.nuget.org/packages/${pythonNupkgFileName}`, function(response) {
             response.pipe(file).on('finish', resolve);
         });
     })
 
     await downloadPythonPromise;
 
-    let extractPythonPromise = new Promise((resolve, reject) => {
+    const extractPythonPromise = new Promise((resolve) => {
         extract(pythonNupkgFileName, { dir: path.resolve(process.cwd(), `system/${pythonInstallDirName}`) }, resolve);
     });
 
@@ -24,7 +24,7 @@ export async function InstallPython(pythonNupkgFileName: string, pythonInstallDi
     await fs.promises.unlink(pythonNupkgFileName);
 }
 
-export async function InitVenv(cwd: string, isDebug: boolean) {
+export async function InitVenv(cwd: string, isDebug: boolean): Promise<void> {
     const makeVenv = spawn('../../python/tools/python.exe', ['-m', 'venv', 'venv'], {
         cwd: cwd
     });
@@ -35,7 +35,7 @@ export async function InitVenv(cwd: string, isDebug: boolean) {
         });
     }
 
-    const makeVenvPromise = new Promise((resolve, reject) => {
+    const makeVenvPromise = new Promise((resolve) => {
         makeVenv.on('close', resolve);
     });
 
@@ -51,7 +51,7 @@ export async function InitVenv(cwd: string, isDebug: boolean) {
         });
     }
 
-    const upgradePipPromise = new Promise((resolve, reject) => {
+    const upgradePipPromise = new Promise((resolve) => {
         upgradePip.on('close', resolve);
     });
 
@@ -67,7 +67,7 @@ export async function InitVenv(cwd: string, isDebug: boolean) {
         });
     }
 
-    const installRequirementsPromise = new Promise((resolve, reject) => {
+    const installRequirementsPromise = new Promise((resolve) => {
         installRequirements.on('close', resolve);
     });
 

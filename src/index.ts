@@ -15,7 +15,7 @@ commander
 
 const WelcomeText = 'Welcome to coldcut, the installer for AI text adventure games.';
 
-async function main() {
+async function main(): Promise<void> {
 
     commander.parse(process.argv);
 
@@ -41,15 +41,15 @@ async function main() {
 
             console.log("\nDone installing! Run coldcut again to play.");
         } else {
-            let addedChoices = [];
+            const addedChoices = [];
             if (state.installedGames.length < Constants.SupportedGames.length) {
                 addedChoices.push(Constants.InstallAnotherGameChoice);
             }
 
             addedChoices.push(Constants.CancelChoice);
 
-            let runGameChoices = state.installedGames.concat(addedChoices);
-            let questions = [
+            const runGameChoices = state.installedGames.concat(addedChoices);
+            const questions = [
                 {
                     type: 'list',
                     name: 'game',
@@ -58,7 +58,7 @@ async function main() {
                 }
             ];
 
-            let answers = await inquirer.prompt(questions);
+            const answers = await inquirer.prompt(questions);
             if (answers['game'] === Constants.CancelChoice) {
                 process.exit(0);
             }
@@ -69,7 +69,7 @@ async function main() {
                 process.exit(0);
             }
 
-            var gameParams = catalogManager.get(answers['game'] as string);
+            const gameParams = catalogManager.get(answers['game'] as string);
             await modelManager.prepareModelForGame(gameParams.Name);
 
             if (gameParams.Name === Constants.Storybro) {
@@ -78,7 +78,7 @@ async function main() {
                 console.log("You must pass the \"cc.config\" config file to storybro to use the AI model managed by coldcut.\n")
                 console.log("Example: \"storybro --config cc.config play newstory\"\n")
 
-                let prompt = [
+                const prompt = [
                     {
                         type: 'input',
                         name: 'nothing',

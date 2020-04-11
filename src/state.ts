@@ -13,7 +13,7 @@ export class State {
     private _installedGames: string[] = [];
     private _modelStates: ModelState[] = [];
 
-    async Init() {
+    async Init(): Promise<void> {
         await storage.init({
             dir: 'system/internal-storage'
         });
@@ -60,7 +60,7 @@ export class State {
         return this._modelStates.find(e => e.modelName === name);
     }
 
-    async setIsPythonInstalled(version: string, value: boolean) {
+    async setIsPythonInstalled(version: string, value: boolean): Promise<void> {
         switch (version) {
             case Constants.Python376:
                 this._isPython376Installed = value;
@@ -75,14 +75,14 @@ export class State {
         }
     }
 
-    async addInstalledGame(value: string) {
+    async addInstalledGame(value: string): Promise<void> {
         this._installedGames.push(value);
 
         await storage.setItem(State.InstalledGamesKey, this._installedGames);
     }
 
-    async setModelState(value: ModelState) {
-        let newState = this._modelStates.filter(m => m.modelName !== value.modelName);
+    async setModelState(value: ModelState): Promise<void> {
+        const newState = this._modelStates.filter(m => m.modelName !== value.modelName);
         newState.push(value);
 
         this._modelStates = newState;

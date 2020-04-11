@@ -53,9 +53,9 @@ export class ModelManager {
         this.state = state;
     }
 
-    async initModel(gameName: string) {
-        let gameData = this.gameData.find(e => e.game === gameName);
-        let model = this.models.find(e => e.modelName === gameData.defaultModel);
+    async initModel(gameName: string): Promise<void> {
+        const gameData = this.gameData.find(e => e.game === gameName);
+        const model = this.models.find(e => e.modelName === gameData.defaultModel);
 
         let currentState = this.state.modelState(model.modelName);
 
@@ -77,18 +77,18 @@ export class ModelManager {
         }
     }
 
-    isModelInstalled(gameName: string) {
-        let gameData = this.gameData.find(e => e.game === gameName);
-        let model = this.models.find(e => e.modelName === gameData.defaultModel);
+    isModelInstalled(gameName: string): boolean {
+        const gameData = this.gameData.find(e => e.game === gameName);
+        const model = this.models.find(e => e.modelName === gameData.defaultModel);
 
-        let currentState = this.state.modelState(model.modelName);
+        const currentState = this.state.modelState(model.modelName);
 
         return currentState && currentState.isInstalled;
     }
 
-    async prepareModelForGame(gameName: string) {
-        let gameData = this.gameData.find(e => e.game === gameName);
-        let model = this.models.find(e => e.modelName === gameData.defaultModel);
+    async prepareModelForGame(gameName: string): Promise<void> {
+        const gameData = this.gameData.find(e => e.game === gameName);
+        const model = this.models.find(e => e.modelName === gameData.defaultModel);
 
         let currentState = this.state.modelState(model.modelName);
 
@@ -106,10 +106,10 @@ export class ModelManager {
 
         if (currentState.currentPath !== gameData.runtimePath) {
             // need to move model here
-            let fileList = await fs.promises.readdir(currentState.currentPath);
-            for (let fileName of fileList) {
-                let oldPath = path.join(currentState.currentPath, fileName);
-                let newPath = path.join(gameData.runtimePath, fileName);
+            const fileList = await fs.promises.readdir(currentState.currentPath);
+            for (const fileName of fileList) {
+                const oldPath = path.join(currentState.currentPath, fileName);
+                const newPath = path.join(gameData.runtimePath, fileName);
 
                 if (this.state.isDebug) {
                     console.log(`Moving file from ${oldPath} to ${newPath}`);

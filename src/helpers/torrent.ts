@@ -1,7 +1,7 @@
 import WebTorrent = require("webtorrent");
 import * as cliProgress from 'cli-progress';
 
-export async function Torrent(destinationPath: string, magnetLink: string) {
+export async function Torrent(destinationPath: string, magnetLink: string): Promise<void> {
     const torrentClient = new WebTorrent();
     const torrentId = magnetLink;
 
@@ -10,7 +10,7 @@ export async function Torrent(destinationPath: string, magnetLink: string) {
         format: '{bar} {percentage}% | {value}/{total}'
     }, cliProgress.Presets.shades_classic);
 
-    let torrent = torrentClient.add(torrentId, {
+    const torrent = torrentClient.add(torrentId, {
         path: destinationPath
     });
 
@@ -21,12 +21,12 @@ export async function Torrent(destinationPath: string, magnetLink: string) {
 
     });
 
-    torrent.on('download', (bytes) => {
+    torrent.on('download', () => {
         progressBar.update(torrent.downloaded);
 
     });
 
-    let torrentDonePromise = new Promise((resolve, reject) => {
+    const torrentDonePromise = new Promise((resolve) => {
         torrent.on('done', () => {
             progressBar.stop();
 

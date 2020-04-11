@@ -26,14 +26,14 @@ An interactive prompt will guide you through the installation.
 - [Yarn](https://classic.yarnpkg.com/en/docs/install/#windows-stable)
 
 ```
-yarn global add typescript pkg
+yarn global add pkg
 ```
 
 ## Building and running from source on Windows
 
 ```
 yarn
-tsc
+yarn tsc
 node .\dist\index.js
 ```
 

@@ -18,8 +18,8 @@ export class CloverEditionInstaller implements InstallerInterface {
         this.modelManager = modelManager;
     }
 
-    async install() {
-        let spinner = new Spinner(`%s Installing ${Constants.CloverEdition} game files`);
+    async install(): Promise<void> {
+        const spinner = new Spinner(`%s Installing ${Constants.CloverEdition} game files`);
         spinner.start();
 
         if (!this.state.isPythonInstalled(Constants.Python376)) {
@@ -52,7 +52,7 @@ export class CloverEditionInstaller implements InstallerInterface {
             });
         }
 
-        const makeVenvPromise = new Promise((resolve, reject) => {
+        const makeVenvPromise = new Promise((resolve) => {
             makeVenv.on('close', resolve);
         });
 
@@ -68,7 +68,7 @@ export class CloverEditionInstaller implements InstallerInterface {
             });
         }
 
-        const upgradePipPromise = new Promise((resolve, reject) => {
+        const upgradePipPromise = new Promise((resolve) => {
             upgradePip.on('close', resolve);
         });
 
@@ -84,7 +84,7 @@ export class CloverEditionInstaller implements InstallerInterface {
             });
         }
 
-        const installTorchPromise = new Promise((resolve, reject) => {
+        const installTorchPromise = new Promise((resolve) => {
             installTorch.on('close', resolve);
         });
 
@@ -100,7 +100,7 @@ export class CloverEditionInstaller implements InstallerInterface {
             });
         }
 
-        const installTransformersPromise = new Promise((resolve, reject) => {
+        const installTransformersPromise = new Promise((resolve) => {
             installTransformers.on('close', resolve);
         });
 
@@ -118,7 +118,7 @@ export class CloverEditionInstaller implements InstallerInterface {
             });
         }
 
-        const installOptionalRequirementsPromise = new Promise((resolve, reject) => {
+        const installOptionalRequirementsPromise = new Promise((resolve) => {
             installOptionalRequirements.on('close', resolve);
         });
 
@@ -134,7 +134,7 @@ export class CloverEditionInstaller implements InstallerInterface {
             });
         }
 
-        const coloramaPromise = new Promise((resolve, reject) => {
+        const coloramaPromise = new Promise((resolve) => {
             colorama.on('close', resolve);
         });
 

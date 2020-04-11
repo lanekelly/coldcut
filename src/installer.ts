@@ -5,9 +5,9 @@ import * as git from 'isomorphic-git';
 import { Constants } from './constants';
 
 export interface InstallerInterface {
-    install(): Promise<void>
+    install(): Promise<void>;
 
-    requiredDiskSpace: string
+    requiredDiskSpace: string;
 }
 
 export class Installer {
@@ -21,11 +21,11 @@ export class Installer {
         git.plugins.set('fs', fs);
     }
 
-    registerInstaller(name: string, installer: InstallerInterface) {
+    registerInstaller(name: string, installer: InstallerInterface): void {
         this.installers.set(name, installer);
     }
 
-    async ExecutePrompt() {
+    async ExecutePrompt(): Promise<void> {
 
         const noninstalledGames = Constants.SupportedGames
             .filter(g => !this.state.installedGames.includes(g));
@@ -35,8 +35,8 @@ export class Installer {
             return;
         }
 
-        let installGameChoices = noninstalledGames.concat(Constants.CancelChoice);
-        let questions = [
+        const installGameChoices = noninstalledGames.concat(Constants.CancelChoice);
+        const questions = [
             {
                 type: 'list',
                 name: 'game',
@@ -46,13 +46,13 @@ export class Installer {
         ];
 
         let answers = await inquirer.prompt(questions);
-        let choice = answers['game'] as string;
+        const choice = answers['game'] as string;
 
         if (choice == Constants.CancelChoice) {
             process.exit(0);
         }
 
-        let installer = this.installers.get(choice);
+        const installer = this.installers.get(choice);
 
         answers = await inquirer.prompt({
             type: 'confirm',
