@@ -25,10 +25,6 @@ An interactive prompt will guide you through the installation.
 - [Node v12](https://nodejs.org/en/blog/release/v12.13.0/)
 - [Yarn](https://classic.yarnpkg.com/en/docs/install/#windows-stable)
 
-```
-yarn global add pkg
-```
-
 ## Building and running from source on Windows
 
 ```
@@ -39,6 +35,10 @@ node .\dist\index.js
 
 ## Packaging a new version for release
 Coldcut uses [zeit/pkg](https://github.com/zeit/pkg) to produce a standalone executable.
+
+```
+yarn global add pkg
+```
 
 In PowerShell:
 ```
